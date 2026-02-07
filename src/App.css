@@ -1,0 +1,56 @@
+/* App-specific styles */
+
+/* Smooth scrolling for the whole app */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Ensure full-width sections */
+section {
+  width: 100%;
+}
+
+/* Custom selection color */
+::selection {
+  background: rgba(255, 77, 109, 0.3);
+  color: white;
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid rgba(255, 77, 109, 0.5);
+  outline-offset: 2px;
+}
+
+/* Button press effect */
+button:active {
+  transform: scale(0.98);
+}
+
+/* Prevent text selection on interactive elements */
+.hold-button,
+.btn-romantic {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Smooth transitions for all interactive elements */
+button,
+input,
+textarea {
+  transition: all 0.3s ease;
+}
+
+/* Mobile touch improvements */
+@media (hover: none) {
+  .btn-romantic:hover {
+    transform: none;
+  }
+}
+
+/* Haptic feedback simulation for mobile */
+@media (pointer: coarse) {
+  button:active {
+    transform: scale(0.97);
+  }
+}
