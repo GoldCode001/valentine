@@ -12,16 +12,16 @@ interface AudioContextType {
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
 
-// Romantic instrumental tracks (using reliable CDN URLs)
+// Romantic instrumental tracks (self-hosted for reliability)
 const MUSIC_TRACKS = [
-  'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112773.mp3',
-  'https://cdn.pixabay.com/download/audio/2022/03/24/audio_c8c8a73467.mp3?filename=soft-piano-100-bpm-121529.mp3',
-  'https://cdn.pixabay.com/download/audio/2021/11/25/audio_5cb8d4c775.mp3?filename=lofi-study-112778.mp3',
+  '/audio/romantic-piano.mp3',
+  '/audio/soft-melody.mp3',
+  '/audio/lofi-love.mp3',
 ];
 
 export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true); // Start muted for autoplay policy
+  const [isMuted, setIsMuted] = useState(false); // Unmuted by default, plays on first interaction
   const [volume, setVolumeState] = useState(0.4);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [currentTrackIndex] = useState(0);

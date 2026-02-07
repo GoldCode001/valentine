@@ -16,7 +16,7 @@ interface RecipientViewProps {
 }
 
 export function RecipientView({ data }: RecipientViewProps) {
-  const { play, isMuted } = useAudio();
+  const { play } = useAudio();
   const containerRef = useRef<HTMLDivElement>(null);
   const phase3Ref = useRef<HTMLElement>(null);
   const phase5Ref = useRef<HTMLElement>(null);
@@ -42,12 +42,10 @@ export function RecipientView({ data }: RecipientViewProps) {
     track('link_opened', { theme: data.theme });
   }, [data.theme]);
 
-  // Start music on first interaction
+  // Start music on first interaction (browsers require user gesture for audio)
   useEffect(() => {
     const handleInteraction = () => {
-      if (isMuted) {
-        play();
-      }
+      play();
     };
 
     window.addEventListener('click', handleInteraction, { once: true });
@@ -57,7 +55,7 @@ export function RecipientView({ data }: RecipientViewProps) {
       window.removeEventListener('click', handleInteraction);
       window.removeEventListener('touchstart', handleInteraction);
     };
-  }, [play, isMuted]);
+  }, [play]);
 
   // Handle hold to reveal compliments
   useEffect(() => {
@@ -409,7 +407,10 @@ export function RecipientView({ data }: RecipientViewProps) {
                 </p>
                 <div className="glass inline-block px-6 py-4 rounded-2xl">
                   <p className="text-gray-400 text-sm">
-                    Take your time. I'll be here.
+                    Take your time. you know where to find me
+                  </p>
+                  <p className="text-gray-400 text-sm mt-2">
+                    i still love you tho... ;)
                   </p>
                 </div>
               </>
