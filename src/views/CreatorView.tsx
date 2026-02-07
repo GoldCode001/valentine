@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { track } from '@vercel/analytics';
+import { compressToEncodedURIComponent } from 'lz-string';
 import { Heart, Sparkles, Music, Palette, Copy, ExternalLink, Check } from 'lucide-react';
 import { useToast } from '../contexts/ToastContext';
 import { FloatingHearts } from '../components/FloatingHearts';
@@ -34,7 +35,6 @@ export function CreatorView() {
     musicTrack: 0,
   });
   const [generatedLink, setGeneratedLink] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const linkInputRef = useRef<HTMLInputElement>(null);
 
@@ -44,44 +44,25 @@ export function CreatorView() {
     setFormData({ ...formData, compliments: newCompliments });
   };
 
-  const generateLink = async () => {
+  const generateLink = () => {
     if (!formData.recipientName.trim() || formData.compliments.some(c => !c.trim())) {
       showToast('Please fill in all fields', 'error');
       return;
     }
 
-    setIsGenerating(true);
-
-    const currentUrl = new URL(window.location.href);
-    currentUrl.search = '';
-
-    const params = new URLSearchParams({
-      to: formData.recipientName.trim(),
-      c1: formData.compliments[0].trim(),
-      c2: formData.compliments[1].trim(),
-      c3: formData.compliments[2].trim(),
+    const data = {
+      t: formData.recipientName.trim(),
+      c: formData.compliments.map(c => c.trim()),
       m: formData.finalMessage.trim(),
-      theme: formData.theme,
-      music: formData.musicTrack.toString(),
-    });
+      h: formData.theme,
+      u: formData.musicTrack,
+    };
 
-    currentUrl.search = params.toString();
-    const fullLink = currentUrl.toString();
+    const compressed = compressToEncodedURIComponent(JSON.stringify(data));
+    const baseUrl = window.location.origin + window.location.pathname;
+    const link = `${baseUrl}?d=${compressed}`;
 
-    // Try to shorten the URL
-    try {
-      const res = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(fullLink)}`);
-      if (res.ok) {
-        const shortUrl = await res.text();
-        setGeneratedLink(shortUrl);
-      } else {
-        setGeneratedLink(fullLink);
-      }
-    } catch {
-      setGeneratedLink(fullLink);
-    }
-
-    setIsGenerating(false);
+    setGeneratedLink(link);
     track('link_created', { theme: formData.theme });
     showToast('Link generated successfully!');
   };
@@ -238,11 +219,10 @@ export function CreatorView() {
           <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={generateLink}
-              disabled={isGenerating}
-              className="flex-1 btn-romantic bg-romantic-red text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 disabled:opacity-60"
+              className="flex-1 btn-romantic bg-romantic-red text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-2"
             >
               <Heart className="w-5 h-5" />
-              {isGenerating ? 'Creating...' : 'Create my link'}
+              Create my link
             </button>
             <button
               onClick={openPreview}
@@ -305,19 +285,20 @@ export function CreatorView() {
             <button
               onClick={() => {
                 setIsPreviewOpen(false);
-                const previewUrl = new URL(window.location.href);
-                previewUrl.search = '';
-                const params = new URLSearchParams({
-                  to: formData.recipientName.trim() || 'Preview',
-                  c1: formData.compliments[0].trim() || 'Your first compliment...',
-                  c2: formData.compliments[1].trim() || 'Your second compliment...',
-                  c3: formData.compliments[2].trim() || 'Your third compliment...',
+                const data = {
+                  t: formData.recipientName.trim() || 'Preview',
+                  c: [
+                    formData.compliments[0].trim() || 'Your first compliment...',
+                    formData.compliments[1].trim() || 'Your second compliment...',
+                    formData.compliments[2].trim() || 'Your third compliment...',
+                  ],
                   m: formData.finalMessage.trim(),
-                  theme: formData.theme,
-                  music: formData.musicTrack.toString(),
-                });
-                previewUrl.search = params.toString();
-                window.open(previewUrl.toString(), '_blank');
+                  h: formData.theme,
+                  u: formData.musicTrack,
+                };
+                const compressed = compressToEncodedURIComponent(JSON.stringify(data));
+                const baseUrl = window.location.origin + window.location.pathname;
+                window.open(`${baseUrl}?d=${compressed}`, '_blank');
               }}
               className="btn-romantic bg-romantic-red text-white font-semibold py-3 px-8 rounded-2xl"
             >
