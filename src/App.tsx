@@ -44,9 +44,7 @@ function App() {
   return (
     <ToastProvider>
       <AudioProvider>
-        <div className="relative min-h-screen bg-romantic-dark">
-          {/* Grain overlay */}
-          <div className="grain-overlay" />
+        <div className="relative min-h-screen bg-romantic-bg">
           
           {/* Main content */}
           {view === 'creator' ? (

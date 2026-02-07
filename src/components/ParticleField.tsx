@@ -53,10 +53,10 @@ export function ParticleField({
     window.addEventListener('resize', resizeCanvas);
 
     const colors = [
-      'rgba(255, 77, 109, ',
-      'rgba(255, 142, 83, ',
-      'rgba(201, 177, 255, ',
-      'rgba(255, 255, 255, ',
+      'rgba(220, 38, 38, ',
+      'rgba(225, 29, 72, ',
+      'rgba(22, 163, 74, ',
+      'rgba(244, 63, 94, ',
     ];
 
     // Initialize particles

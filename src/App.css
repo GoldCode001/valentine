@@ -12,13 +12,13 @@ section {
 
 /* Custom selection color */
 ::selection {
-  background: rgba(255, 77, 109, 0.3);
-  color: white;
+  background: rgba(220, 38, 38, 0.2);
+  color: #1F2937;
 }
 
 /* Focus styles */
 *:focus-visible {
-  outline: 2px solid rgba(255, 77, 109, 0.5);
+  outline: 2px solid rgba(220, 38, 38, 0.4);
   outline-offset: 2px;
 }
 

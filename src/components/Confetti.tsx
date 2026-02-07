@@ -24,12 +24,12 @@ export function Confetti({ isActive, duration = 3000 }: ConfettiProps) {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const colors = [
-    '#FF4D6D',
-    '#FF8E53',
-    '#C9B1FF',
-    '#FFD700',
-    '#FF69B4',
+    '#DC2626',
+    '#E11D48',
+    '#16A34A',
+    '#F43F5E',
     '#FFFFFF',
+    '#B91C1C',
   ];
 
   useEffect(() => {

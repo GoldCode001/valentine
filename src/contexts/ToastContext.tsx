@@ -38,8 +38,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           >
             {toast.type === 'success' && <Check className="w-5 h-5 text-green-400" />}
             {toast.type === 'error' && <X className="w-5 h-5 text-red-400" />}
-            {toast.type === 'info' && <Copy className="w-5 h-5 text-romantic-pink" />}
-            <span className="text-white text-sm font-medium">{toast.message}</span>
+            {toast.type === 'info' && <Copy className="w-5 h-5 text-romantic-red" />}
+            <span className="text-gray-800 text-sm font-medium">{toast.message}</span>
           </div>
         ))}
       </div>

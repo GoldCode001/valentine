@@ -5,10 +5,10 @@ import { FloatingHearts } from '../components/FloatingHearts';
 import type { ValentineData } from '../App';
 
 const THEMES = [
-  { id: 'sunset', name: 'Sunset', gradient: 'from-orange-400 via-pink-500 to-rose-500', color: '#FF4D6D' },
-  { id: 'rose-gold', name: 'Rose Gold', gradient: 'from-rose-300 via-pink-300 to-purple-300', color: '#E8B4B8' },
-  { id: 'midnight', name: 'Midnight', gradient: 'from-indigo-500 via-purple-500 to-pink-500', color: '#667eea' },
-  { id: 'cherry', name: 'Cherry', gradient: 'from-red-500 via-rose-500 to-orange-400', color: '#ff0844' },
+  { id: 'sunset', name: 'Classic Red', gradient: 'from-red-600 via-red-500 to-rose-500', color: '#DC2626' },
+  { id: 'rose-gold', name: 'Rose', gradient: 'from-rose-400 via-pink-400 to-rose-300', color: '#FB7185' },
+  { id: 'midnight', name: 'Red & Green', gradient: 'from-red-700 via-red-600 to-green-600', color: '#B91C1C' },
+  { id: 'cherry', name: 'Cherry', gradient: 'from-rose-600 via-red-600 to-red-700', color: '#E11D48' },
 ] as const;
 
 const MUSIC_TRACKS = [
@@ -38,7 +38,7 @@ export function CreatorView() {
 
   const handleComplimentChange = (index: number, value: string) => {
     const newCompliments = [...formData.compliments];
-    newCompliments[index] = value.slice(0, 150); // Character limit
+    newCompliments[index] = value.slice(0, 150);
     setFormData({ ...formData, compliments: newCompliments });
   };
 
@@ -48,10 +48,9 @@ export function CreatorView() {
       return;
     }
 
-    // Use URL constructor for reliable URL building
     const currentUrl = new URL(window.location.href);
-    currentUrl.search = ''; // Clear existing query params
-    
+    currentUrl.search = '';
+
     const params = new URLSearchParams({
       to: formData.recipientName.trim(),
       c1: formData.compliments[0].trim(),
@@ -85,31 +84,23 @@ export function CreatorView() {
   };
 
   return (
-    <div className="min-h-screen bg-romantic-dark relative overflow-hidden">
+    <div className="min-h-screen bg-romantic-bg relative overflow-hidden">
       {/* Floating hearts background */}
-      <FloatingHearts count={12} color="rgba(255, 77, 109, 0.15)" minSize={12} maxSize={28} />
-      
-      {/* Radial gradient vignette */}
-      <div 
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse at center, transparent 0%, rgba(11,11,13,0.4) 100%)',
-        }}
-      />
+      <FloatingHearts count={12} color="rgba(220, 38, 38, 0.12)" minSize={12} maxSize={28} />
 
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-12">
         {/* Header */}
         <div className="text-center mb-8 animate-fade-in-up">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Heart className="w-5 h-5 text-romantic-pink fill-romantic-pink/30" />
-            <span className="label-text text-romantic-pink/80">Valentine Message Creator</span>
-            <Heart className="w-5 h-5 text-romantic-pink fill-romantic-pink/30" />
+            <Heart className="w-5 h-5 text-romantic-red fill-romantic-red/20" />
+            <span className="label-text text-romantic-red/70">Valentine Message Creator</span>
+            <Heart className="w-5 h-5 text-romantic-red fill-romantic-red/20" />
           </div>
-          <h1 className="heading-xl font-poppins font-bold text-white mb-4">
+          <h1 className="heading-xl font-poppins font-bold text-gray-900 mb-4">
             Create a tiny page.<br />
             <span className="text-gradient">Ask something big.</span>
           </h1>
-          <p className="body-text text-white/60 max-w-md mx-auto">
+          <p className="body-text text-gray-500 max-w-md mx-auto">
             Write a few lines, pick a vibe, and share a link they'll actually remember.
           </p>
         </div>
@@ -118,7 +109,7 @@ export function CreatorView() {
         <div className="w-full max-w-2xl glass rounded-3xl p-6 md:p-8 animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
           {/* Recipient Name */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-white/80 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Their name
             </label>
             <input
@@ -133,8 +124,8 @@ export function CreatorView() {
 
           {/* Compliments */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-white/80 mb-3 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-romantic-pink" />
+            <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-romantic-red" />
               Three things that make them special
             </label>
             <div className="space-y-3">
@@ -148,7 +139,7 @@ export function CreatorView() {
                     rows={2}
                     maxLength={150}
                   />
-                  <span className="absolute bottom-2 right-3 text-xs text-white/30">
+                  <span className="absolute bottom-2 right-3 text-xs text-gray-400">
                     {compliment.length}/150
                   </span>
                 </div>
@@ -158,7 +149,7 @@ export function CreatorView() {
 
           {/* Final Message */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-white/80 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Final message (after they say yes)
             </label>
             <textarea
@@ -173,8 +164,8 @@ export function CreatorView() {
 
           {/* Theme Selection */}
           <div className="mb-6">
-            <label className="block text-sm font-medium text-white/80 mb-3 flex items-center gap-2">
-              <Palette className="w-4 h-4 text-romantic-pink" />
+            <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+              <Palette className="w-4 h-4 text-romantic-red" />
               Choose a theme
             </label>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -184,14 +175,14 @@ export function CreatorView() {
                   onClick={() => setFormData({ ...formData, theme: theme.id as typeof formData.theme })}
                   className={`relative p-3 rounded-xl border-2 transition-all duration-300 ${
                     formData.theme === theme.id
-                      ? 'border-romantic-pink bg-romantic-pink/10'
-                      : 'border-white/10 bg-white/5 hover:border-white/20'
+                      ? 'border-romantic-red bg-romantic-red-light'
+                      : 'border-gray-200 bg-white hover:border-red-200'
                   }`}
                 >
                   <div className={`w-full h-8 rounded-lg bg-gradient-to-r ${theme.gradient} mb-2`} />
-                  <span className="text-xs text-white/80">{theme.name}</span>
+                  <span className="text-xs text-gray-600">{theme.name}</span>
                   {formData.theme === theme.id && (
-                    <div className="absolute top-1 right-1 w-4 h-4 bg-romantic-pink rounded-full flex items-center justify-center">
+                    <div className="absolute top-1 right-1 w-4 h-4 bg-romantic-red rounded-full flex items-center justify-center">
                       <Check className="w-3 h-3 text-white" />
                     </div>
                   )}
@@ -202,8 +193,8 @@ export function CreatorView() {
 
           {/* Music Selection */}
           <div className="mb-8">
-            <label className="block text-sm font-medium text-white/80 mb-3 flex items-center gap-2">
-              <Music className="w-4 h-4 text-romantic-pink" />
+            <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
+              <Music className="w-4 h-4 text-romantic-red" />
               Background music
             </label>
             <div className="flex flex-wrap gap-3">
@@ -213,12 +204,12 @@ export function CreatorView() {
                   onClick={() => setFormData({ ...formData, musicTrack: track.id })}
                   className={`px-4 py-2 rounded-xl border-2 transition-all duration-300 flex items-center gap-2 ${
                     formData.musicTrack === track.id
-                      ? 'border-romantic-pink bg-romantic-pink/10'
-                      : 'border-white/10 bg-white/5 hover:border-white/20'
+                      ? 'border-romantic-red bg-romantic-red-light'
+                      : 'border-gray-200 bg-white hover:border-red-200'
                   }`}
                 >
                   <span>{track.emoji}</span>
-                  <span className="text-sm text-white/80">{track.name}</span>
+                  <span className="text-sm text-gray-600">{track.name}</span>
                 </button>
               ))}
             </div>
@@ -228,14 +219,14 @@ export function CreatorView() {
           <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={generateLink}
-              className="flex-1 btn-romantic bg-romantic-pink text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-2"
+              className="flex-1 btn-romantic bg-romantic-red text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-2"
             >
               <Heart className="w-5 h-5" />
               Create my link
             </button>
             <button
               onClick={openPreview}
-              className="sm:w-auto btn-romantic bg-white/10 text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 border border-white/20"
+              className="sm:w-auto btn-romantic bg-white text-romantic-red font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 border-2 border-romantic-red/20"
             >
               <ExternalLink className="w-5 h-5" />
               Preview
@@ -244,8 +235,8 @@ export function CreatorView() {
 
           {/* Generated Link */}
           {generatedLink && (
-            <div className="mt-6 p-4 bg-romantic-pink/10 rounded-2xl border border-romantic-pink/30 animate-fade-in-up">
-              <label className="block text-sm font-medium text-white/80 mb-2">
+            <div className="mt-6 p-4 bg-romantic-red-light rounded-2xl border border-romantic-red/20 animate-fade-in-up">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Your shareable link
               </label>
               <div className="flex gap-2">
@@ -258,7 +249,7 @@ export function CreatorView() {
                 />
                 <button
                   onClick={copyLink}
-                  className="btn-romantic bg-romantic-pink text-white px-4 rounded-xl flex items-center gap-2"
+                  className="btn-romantic bg-romantic-red text-white px-4 rounded-xl flex items-center gap-2"
                 >
                   <Copy className="w-4 h-4" />
                   Copy
@@ -269,32 +260,31 @@ export function CreatorView() {
         </div>
 
         {/* Footer */}
-        <p className="mt-8 text-white/40 text-sm">
-          Made with <Heart className="w-4 h-4 inline text-romantic-pink fill-romantic-pink" /> for Valentine's Day
+        <p className="mt-8 text-gray-400 text-sm">
+          Made with <Heart className="w-4 h-4 inline text-romantic-red fill-romantic-red" /> for Valentine's Day
         </p>
       </div>
 
       {/* Preview Modal */}
       {isPreviewOpen && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
           onClick={() => setIsPreviewOpen(false)}
         >
-          <div 
+          <div
             className="glass-strong rounded-3xl p-8 max-w-md w-full text-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <Heart className="w-16 h-16 text-romantic-pink mx-auto mb-4 animate-heart-beat" />
-            <h3 className="text-2xl font-poppins font-bold text-white mb-2">
+            <Heart className="w-16 h-16 text-romantic-red mx-auto mb-4 animate-heart-beat" />
+            <h3 className="text-2xl font-poppins font-bold text-gray-900 mb-2">
               Preview Mode
             </h3>
-            <p className="text-white/60 mb-6">
+            <p className="text-gray-500 mb-6">
               This is how your Valentine will see the message. Close this to continue editing.
             </p>
             <button
               onClick={() => {
                 setIsPreviewOpen(false);
-                // Open preview in new tab with current form data
                 const previewUrl = new URL(window.location.href);
                 previewUrl.search = '';
                 const params = new URLSearchParams({
@@ -309,7 +299,7 @@ export function CreatorView() {
                 previewUrl.search = params.toString();
                 window.open(previewUrl.toString(), '_blank');
               }}
-              className="btn-romantic bg-romantic-pink text-white font-semibold py-3 px-8 rounded-2xl"
+              className="btn-romantic bg-romantic-red text-white font-semibold py-3 px-8 rounded-2xl"
             >
               Open in New Tab
             </button>

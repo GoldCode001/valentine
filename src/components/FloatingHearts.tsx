@@ -112,7 +112,7 @@ export function FloatingHearts({
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-[1]"
-      style={{ mixBlendMode: 'screen' }}
+      style={{ mixBlendMode: 'multiply' }}
     />
   );
 }

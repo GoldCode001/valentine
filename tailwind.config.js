@@ -11,12 +11,14 @@ module.exports = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         romantic: {
-          dark: '#0B0B0D',
-          red: '#6B1A22',
-          pink: '#FF4D6D',
-          coral: '#FF8E53',
-          purple: '#C9B1FF',
-          cream: '#F6F2FF',
+          bg: '#FFF5F5',
+          red: '#DC2626',
+          'red-dark': '#B91C1C',
+          'red-light': '#FEE2E2',
+          green: '#16A34A',
+          'green-light': '#DCFCE7',
+          white: '#FFFFFF',
+          cream: '#FFF1F2',
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",
@@ -62,9 +64,9 @@ module.exports = {
       },
       boxShadow: {
         xs: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-        romantic: "0 10px 30px rgba(0, 0, 0, 0.35)",
-        'romantic-glow': "0 14px 40px rgba(255, 77, 109, 0.25)",
-        'heart-glow': "0 0 60px rgba(255, 77, 109, 0.3)",
+        romantic: "0 4px 20px rgba(220, 38, 38, 0.12)",
+        'romantic-glow': "0 8px 30px rgba(220, 38, 38, 0.18)",
+        'heart-glow': "0 0 40px rgba(220, 38, 38, 0.2)",
       },
       keyframes: {
         "accordion-down": {
