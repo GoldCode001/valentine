@@ -34,6 +34,7 @@ export function CreatorView() {
     musicTrack: 0,
   });
   const [generatedLink, setGeneratedLink] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const linkInputRef = useRef<HTMLInputElement>(null);
 
@@ -43,11 +44,13 @@ export function CreatorView() {
     setFormData({ ...formData, compliments: newCompliments });
   };
 
-  const generateLink = () => {
+  const generateLink = async () => {
     if (!formData.recipientName.trim() || formData.compliments.some(c => !c.trim())) {
       showToast('Please fill in all fields', 'error');
       return;
     }
+
+    setIsGenerating(true);
 
     const currentUrl = new URL(window.location.href);
     currentUrl.search = '';
@@ -63,8 +66,22 @@ export function CreatorView() {
     });
 
     currentUrl.search = params.toString();
-    const link = currentUrl.toString();
-    setGeneratedLink(link);
+    const fullLink = currentUrl.toString();
+
+    // Try to shorten the URL
+    try {
+      const res = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(fullLink)}`);
+      if (res.ok) {
+        const shortUrl = await res.text();
+        setGeneratedLink(shortUrl);
+      } else {
+        setGeneratedLink(fullLink);
+      }
+    } catch {
+      setGeneratedLink(fullLink);
+    }
+
+    setIsGenerating(false);
     track('link_created', { theme: formData.theme });
     showToast('Link generated successfully!');
   };
@@ -221,10 +238,11 @@ export function CreatorView() {
           <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={generateLink}
-              className="flex-1 btn-romantic bg-romantic-red text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-2"
+              disabled={isGenerating}
+              className="flex-1 btn-romantic bg-romantic-red text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-center gap-2 disabled:opacity-60"
             >
               <Heart className="w-5 h-5" />
-              Create my link
+              {isGenerating ? 'Creating...' : 'Create my link'}
             </button>
             <button
               onClick={openPreview}

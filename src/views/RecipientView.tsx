@@ -19,6 +19,7 @@ export function RecipientView({ data }: RecipientViewProps) {
   const { play } = useAudio();
   const containerRef = useRef<HTMLDivElement>(null);
   const phase3Ref = useRef<HTMLElement>(null);
+  const phase4Ref = useRef<HTMLElement>(null);
   const phase5Ref = useRef<HTMLElement>(null);
   const [response, setResponse] = useState<'yes' | 'talk' | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -310,12 +311,19 @@ export function RecipientView({ data }: RecipientViewProps) {
             So yeah... I don't want to stop<br />
             collecting these moments
           </p>
+          <button
+            onClick={() => phase4Ref.current?.scrollIntoView({ behavior: 'smooth' })}
+            className="mt-10 btn-romantic bg-romantic-red text-white font-semibold py-4 px-8 rounded-2xl flex items-center justify-center gap-3 mx-auto"
+          >
+            <Heart className="w-5 h-5" fill="white" />
+            Click me
+          </button>
         </div>
       </section>
 
       {/* Phase 4: The Question */}
       {!response && (
-        <section className="min-h-screen flex flex-col items-center justify-center relative px-6 py-20 bg-romantic-bg">
+        <section ref={phase4Ref} className="min-h-screen flex flex-col items-center justify-center relative px-6 py-20 bg-romantic-bg">
           <FloatingHearts count={10} color="rgba(220, 38, 38, 0.12)" minSize={14} maxSize={28} />
 
           <div className="relative z-10 text-center max-w-3xl mx-auto">
