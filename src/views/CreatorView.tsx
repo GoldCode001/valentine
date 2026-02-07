@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import { track } from '@vercel/analytics';
 import { Heart, Sparkles, Music, Palette, Copy, ExternalLink, Check } from 'lucide-react';
 import { useToast } from '../contexts/ToastContext';
 import { FloatingHearts } from '../components/FloatingHearts';
@@ -64,6 +65,7 @@ export function CreatorView() {
     currentUrl.search = params.toString();
     const link = currentUrl.toString();
     setGeneratedLink(link);
+    track('link_created', { theme: formData.theme });
     showToast('Link generated successfully!');
   };
 

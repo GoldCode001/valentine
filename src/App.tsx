@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { CreatorView } from './views/CreatorView';
 import { RecipientView } from './views/RecipientView';
 import { AudioProvider } from './contexts/AudioContext';
@@ -55,6 +56,8 @@ function App() {
           
           {/* Audio toggle (only show in recipient view) */}
           {view === 'recipient' && <AudioToggle />}
+
+          <Analytics />
         </div>
       </AudioProvider>
     </ToastProvider>

@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { track } from '@vercel/analytics';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useAudio } from '../contexts/AudioContext';
@@ -17,10 +18,16 @@ interface RecipientViewProps {
 export function RecipientView({ data }: RecipientViewProps) {
   const { play, isMuted } = useAudio();
   const containerRef = useRef<HTMLDivElement>(null);
+  const phase3Ref = useRef<HTMLElement>(null);
+  const phase5Ref = useRef<HTMLElement>(null);
   const [response, setResponse] = useState<'yes' | 'talk' | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [isHolding, setIsHolding] = useState(false);
   const [complimentIndex, setComplimentIndex] = useState(-1);
+  const [complimentsComplete, setComplimentsComplete] = useState(false);
+
+  const COMPLIMENT_INTERVAL = 1800;
+  const TOTAL_HOLD_TIME = data.compliments.length * COMPLIMENT_INTERVAL;
 
   // Theme colors
   const themeColors = {
@@ -29,6 +36,11 @@ export function RecipientView({ data }: RecipientViewProps) {
     midnight: 'from-red-700 via-red-600 to-green-600',
     cherry: 'from-rose-600 via-red-600 to-red-700',
   };
+
+  // Track link opened
+  useEffect(() => {
+    track('link_opened', { theme: data.theme });
+  }, [data.theme]);
 
   // Start music on first interaction
   useEffect(() => {
@@ -50,7 +62,10 @@ export function RecipientView({ data }: RecipientViewProps) {
   // Handle hold to reveal compliments
   useEffect(() => {
     if (!isHolding) {
-      setComplimentIndex(-1);
+      // Don't reset if compliments are fully revealed
+      if (!complimentsComplete) {
+        setComplimentIndex(-1);
+      }
       return;
     }
 
@@ -63,11 +78,23 @@ export function RecipientView({ data }: RecipientViewProps) {
         setComplimentIndex(index);
       } else {
         clearInterval(interval);
+        setComplimentsComplete(true);
       }
-    }, 1800);
+    }, COMPLIMENT_INTERVAL);
 
     return () => clearInterval(interval);
-  }, [isHolding, data.compliments]);
+  }, [isHolding, data.compliments, complimentsComplete, COMPLIMENT_INTERVAL]);
+
+  // Auto-scroll to Phase 3 when user releases after all compliments shown
+  const handleRelease = useCallback(() => {
+    setIsHolding(false);
+    if (complimentsComplete && phase3Ref.current) {
+      // Small delay so "release" feels intentional
+      setTimeout(() => {
+        phase3Ref.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 600);
+    }
+  }, [complimentsComplete]);
 
   // GSAP animations
   useEffect(() => {
@@ -102,11 +129,19 @@ export function RecipientView({ data }: RecipientViewProps) {
   const handleYes = () => {
     setResponse('yes');
     setShowConfetti(true);
+    track('valentine_response', { answer: 'yes' });
     setTimeout(() => setShowConfetti(false), 4000);
+    setTimeout(() => {
+      phase5Ref.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 300);
   };
 
   const handleTalk = () => {
     setResponse('talk');
+    track('valentine_response', { answer: 'talk' });
+    setTimeout(() => {
+      phase5Ref.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 300);
   };
 
   return (
@@ -170,22 +205,26 @@ export function RecipientView({ data }: RecipientViewProps) {
           {/* Hold instruction */}
           <div className="mb-12">
             <p className="text-gray-500 text-lg mb-8">
-              {isHolding ? 'Keep holding...' : 'Hold to see why I\'m nervous...'}
+              {complimentsComplete
+                ? 'Now let go...'
+                : isHolding
+                  ? 'Keep holding...'
+                  : 'Hold to see why I\'m nervous...'}
             </p>
 
             {/* Hold button */}
             <button
-              onMouseDown={() => setIsHolding(true)}
-              onMouseUp={() => setIsHolding(false)}
-              onMouseLeave={() => setIsHolding(false)}
-              onTouchStart={() => setIsHolding(true)}
-              onTouchEnd={() => setIsHolding(false)}
-              className="hold-button w-28 h-28 mx-auto relative"
+              onMouseDown={() => { if (!complimentsComplete) setIsHolding(true); }}
+              onMouseUp={handleRelease}
+              onMouseLeave={handleRelease}
+              onTouchStart={() => { if (!complimentsComplete) setIsHolding(true); }}
+              onTouchEnd={handleRelease}
+              className={`hold-button w-28 h-28 mx-auto relative ${complimentsComplete ? 'cursor-default' : ''}`}
             >
               {/* Glow effect */}
               <div
                 className={`absolute inset-0 rounded-full transition-opacity duration-300 ${
-                  isHolding ? 'opacity-100' : 'opacity-0'
+                  isHolding || complimentsComplete ? 'opacity-100' : 'opacity-0'
                 }`}
                 style={{
                   background: 'radial-gradient(circle, rgba(220, 38, 38, 0.15) 0%, transparent 70%)',
@@ -195,10 +234,10 @@ export function RecipientView({ data }: RecipientViewProps) {
 
               {/* Inner circle */}
               <div className={`w-24 h-24 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
-                isHolding ? 'border-romantic-red bg-romantic-red/10' : 'border-gray-300'
+                isHolding || complimentsComplete ? 'border-romantic-red bg-romantic-red/10' : 'border-gray-300'
               }`}>
                 <Hand className={`w-8 h-8 transition-colors duration-300 ${
-                  isHolding ? 'text-romantic-red' : 'text-gray-400'
+                  isHolding || complimentsComplete ? 'text-romantic-red' : 'text-gray-400'
                 }`} />
               </div>
 
@@ -211,10 +250,11 @@ export function RecipientView({ data }: RecipientViewProps) {
                   fill="none"
                   stroke="rgba(220, 38, 38, 0.25)"
                   strokeWidth="2"
-                  strokeDasharray={`${isHolding ? 327 : 0} 327`}
-                  className="transition-all duration-[2000ms] ease-linear"
+                  strokeDasharray="327 327"
+                  className="transition-all ease-linear"
                   style={{
-                    strokeDashoffset: isHolding ? 0 : 327,
+                    strokeDashoffset: isHolding || complimentsComplete ? 0 : 327,
+                    transitionDuration: isHolding ? `${TOTAL_HOLD_TIME}ms` : '0ms',
                   }}
                 />
               </svg>
@@ -241,7 +281,7 @@ export function RecipientView({ data }: RecipientViewProps) {
 
           {/* Release hint */}
           <p className={`mt-12 text-gray-400 text-sm transition-opacity duration-500 ${
-            complimentIndex >= data.compliments.length - 1 ? 'opacity-100' : 'opacity-0'
+            complimentsComplete && isHolding ? 'opacity-100' : 'opacity-0'
           }`}>
             Release to see how I feel
           </p>
@@ -249,7 +289,7 @@ export function RecipientView({ data }: RecipientViewProps) {
       </section>
 
       {/* Phase 3: Heart Formation */}
-      <section className="min-h-screen flex flex-col items-center justify-center relative px-6 py-20 overflow-hidden bg-romantic-cream">
+      <section ref={phase3Ref} className="min-h-screen flex flex-col items-center justify-center relative px-6 py-20 overflow-hidden bg-romantic-cream">
         <ParticleField
           isFormingHeart={true}
           heartProgress={1}
@@ -324,6 +364,7 @@ export function RecipientView({ data }: RecipientViewProps) {
       {/* Phase 5: Response */}
       {response && (
         <section
+          ref={phase5Ref}
           className={`min-h-screen flex flex-col items-center justify-center relative px-6 py-20 transition-colors duration-1000 ${
             response === 'yes' ? 'bg-romantic-yes' : 'bg-romantic-bg'
           }`}
